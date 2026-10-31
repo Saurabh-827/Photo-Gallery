@@ -12,5 +12,7 @@ export function loadFavourites() {
 export function saveFavourites(ids) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
-  } catch {}
+  } catch (err) {
+    console.error("Could not save favourites:", err);
+  }
 }
