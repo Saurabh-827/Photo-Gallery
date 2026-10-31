@@ -1,19 +1,23 @@
 import useFetchPhotos from "./hooks/useFetchPhotos";
-import { Spinner } from "./components/Spinner";
-import { PhotoCard } from "./components/PhotoCard";
+import Spinner from "./components/Spinner";
+import PhotoCard from "./components/PhotoCard";
 
-function App() {
+export default function App() {
   const { photos, loading, error } = useFetchPhotos();
-  console.log({ photos, loading, error });
+
+  if (loading) return <Spinner />;
+  if (error) return <p className="p-6 text-red-600">{error}</p>;
+
   return (
-    <>
-      <h1 className="p-6 text-2xl font-semibold text-indigo-600">
-        Photo Gallery
-      </h1>
-      <Spinner></Spinner>
-      <PhotoCard photo={photos}></PhotoCard>
-    </>
+    <ul className="grid grid-cols-1 gap-6 p-6 md:grid-cols-2 lg:grid-cols-4">
+      {photos.map((photo) => (
+        <PhotoCard
+          key={photo.id}
+          photo={photo}
+          isFavourite={false}
+          onToggle={() => {}}
+        />
+      ))}
+    </ul>
   );
 }
-
-export default App;
