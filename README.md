@@ -21,7 +21,7 @@ after a page refresh.
 ## Getting started
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/Saurabh-827/Photo-Gallery.git
 cd photo-gallery
 npm install
 npm run dev
