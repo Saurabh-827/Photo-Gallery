@@ -1,4 +1,8 @@
+import useFetchPhotos from "./hooks/useFetchPhotos";
+
 function App() {
+  const { photos, loading, error } = useFetchPhotos();
+  console.log({ photos, loading, error });
   return (
     <>
       <h1 className="p-6 text-2xl font-semibold text-indigo-600">
