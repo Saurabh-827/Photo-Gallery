@@ -1,16 +1,68 @@
-# React + Vite
+# Photo Gallery
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A responsive photo gallery built with React, Vite and Tailwind CSS. It loads 30 photos
+from the Picsum Photos API, lets the user search them by author name, and lets the user
+mark photos as favourites. Favourites are saved in the browser, so they are still there
+after a page refresh.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Fetches 30 photos on load, with a loading spinner and an error message if the request fails
+- Responsive grid: 1 column on mobile, 2 on tablet, 4 on desktop
+- Real-time search by author name (filters the already fetched data, no extra API call)
+- Favourite toggle on every card, managed with `useReducer` and persisted in `localStorage`
 
-## React Compiler
+## Tech stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React (functional components and hooks only)
+- Vite
+- Tailwind CSS (no other UI libraries)
 
-## Expanding the ESLint configuration
+## Getting started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+git clone <repo-url>
+cd photo-gallery
+npm install
+npm run dev
+```
+
+Other scripts: `npm run build` (production build) and `npm run lint`.
+
+## Project structure
+
+```
+src/
+  components/
+    Gallery.jsx      Main container: search state, favourites state, filtered list
+    PhotoCard.jsx    One photo with author name and favourite button
+    SearchBar.jsx    Search input
+    Spinner.jsx      Loading indicator
+  hooks/
+    useFetchPhotos.js        Fetches photos, returns { photos, loading, error }
+  reducers/
+    favouritesReducer.js     Reducer for the favourites list
+  utils/
+    storage.js               Read and write favourites in localStorage
+  App.jsx
+  main.jsx
+```
+
+## Design decisions
+
+- **Custom hook (`useFetchPhotos`)** keeps the data fetching out of the UI. `Gallery` only
+  uses the returned values. The hook checks `res.ok`, handles errors, and uses an
+  `AbortController` to cancel the request on cleanup.
+- **`useReducer` for favourites.** Adding or removing a favourite depends on the previous
+  state, so the logic lives in one pure reducer (`TOGGLE_FAVOURITE`). The initial state is
+  read from `localStorage` with a lazy initializer, and saved again in a `useEffect`
+  whenever favourites change.
+- **`useMemo`** computes the filtered list only when `photos` or the search text change,
+  not on every render.
+- **`useCallback` + `React.memo`.** The handlers keep the same reference between renders,
+  so `SearchBar` and `PhotoCard` do not re-render unnecessarily when only the favourites
+  change.
+- **Image size.** Cards use `picsum.photos/id/{id}/600/400` instead of the original
+  `download_url`, so the page does not load full-size images. Images are lazy loaded.
+- **Accessibility.** The search input has a label, the favourite button uses
+  `aria-pressed`, and the spinner and error message have proper roles.
