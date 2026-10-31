@@ -22,7 +22,7 @@ after a page refresh.
 
 ```bash
 git clone https://github.com/Saurabh-827/Photo-Gallery.git
-cd photo-gallery
+cd Photo-Gallery
 npm install
 npm run dev
 ```
